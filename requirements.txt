@@ -1,0 +1,6 @@
+# UCX Chess Platform - Python utilities (optional)
+# The main application runs on Node.js
+# These are for optional scripts and tools
+
+requests>=2.31.0
+python-dotenv>=1.0.0

@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: ucx-chess-platform
+    env: node
+    plan: free
+    buildCommand: yarn install && cd client && yarn install && yarn build
+    startCommand: yarn start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DB_PATH
+        value: /data/chess.db
+    disk:
+      name: chess-data
+      mountPath: /data
+      sizeGB: 1
