@@ -46,7 +46,7 @@ function AppContent() {
       <main className="main-content">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/play" element={<ProtectedRoute><Play theme={theme} /></ProtectedRoute>} />
+          <Route path="/play" element={<Play theme={theme} />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/privacy" element={<Privacy />} />

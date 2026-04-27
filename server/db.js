@@ -15,18 +15,28 @@ db.exec(`
     id TEXT PRIMARY KEY,
     username TEXT UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
+    elo INTEGER DEFAULT 800,
+    calibration_games INTEGER DEFAULT 0,
+    games_played INTEGER DEFAULT 0,
+    games_won INTEGER DEFAULT 0,
+    games_drawn INTEGER DEFAULT 0,
+    games_lost INTEGER DEFAULT 0,
     created_at TEXT DEFAULT (datetime('now')),
     last_login TEXT,
     settings TEXT DEFAULT '{}'
   );
   CREATE TABLE IF NOT EXISTS games (
     id TEXT PRIMARY KEY,
-    user_id TEXT NOT NULL,
+    user_id TEXT,
+    anonymous_id TEXT,
     opponent_type TEXT NOT NULL,
     result TEXT,
+    player_color TEXT,
+    elo_before INTEGER,
+    elo_after INTEGER,
     pgn TEXT,
-    created_at TEXT DEFAULT (datetime('now')),
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    moves_count INTEGER DEFAULT 0,
+    created_at TEXT DEFAULT (datetime('now'))
   );
   CREATE TABLE IF NOT EXISTS encryption_keys (
     id INTEGER PRIMARY KEY CHECK (id = 1),

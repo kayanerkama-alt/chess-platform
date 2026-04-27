@@ -18,14 +18,25 @@ export default function Home() {
         <p className="hero-founded">Founded in 2023 by Kayan Erkama</p>
         <div className="hero-actions">
           {user ? (
-            <Link to="/play" className="btn btn-primary btn-lg">Play Now</Link>
+            <>
+              <Link to="/play" className="btn btn-primary btn-lg">Play Now</Link>
+              <div className="hero-elo">
+                <span className="elo-badge">ELO: {user.elo}</span>
+                {user.calibrationGames < 2 && (
+                  <span className="calibration-badge">Calibrating ({user.calibrationGames}/2)</span>
+                )}
+              </div>
+            </>
           ) : (
             <>
-              <Link to="/register" className="btn btn-primary btn-lg">Get Started</Link>
-              <Link to="/login" className="btn btn-outline btn-lg">Sign In</Link>
+              <Link to="/play" className="btn btn-primary btn-lg">Play as Guest</Link>
+              <Link to="/register" className="btn btn-outline btn-lg">Create Account</Link>
             </>
           )}
         </div>
+        {!user && (
+          <p className="hero-guest-note">No account needed to play! Sign up to track your ELO rating and game history.</p>
+        )}
       </section>
 
       <section className="features">
@@ -48,6 +59,16 @@ export default function Home() {
           <div className="feature-icon">&#9889;</div>
           <h3>Lightning Fast</h3>
           <p>Optimized for speed with minimal latency and instant responses.</p>
+        </div>
+        <div className="feature-card">
+          <div className="feature-icon">&#127942;</div>
+          <h3>ELO Rating</h3>
+          <p>Play 2 calibration games to determine your starting level, then track your rating.</p>
+        </div>
+        <div className="feature-card">
+          <div className="feature-icon">&#128241;</div>
+          <h3>Play Anywhere</h3>
+          <p>Fully responsive on mobile, tablet, and desktop. Your settings sync across devices.</p>
         </div>
       </section>
 

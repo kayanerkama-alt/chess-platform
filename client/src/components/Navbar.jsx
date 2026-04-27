@@ -20,7 +20,7 @@ export default function Navbar({ theme, setTheme }) {
         <span>UCX Chess</span>
       </Link>
       <div className="nav-links">
-        {user && <Link to="/play" className="nav-link">Play</Link>}
+        <Link to="/play" className="nav-link">Play</Link>
         <div className="theme-dropdown">
           <button className="nav-link theme-btn" onClick={() => setShowThemes(!showThemes)}>
             Theme

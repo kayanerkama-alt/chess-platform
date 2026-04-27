@@ -3,16 +3,21 @@ import { Chess } from 'chess.js';
 import Chessboard from '../components/Chessboard';
 import { BOT_STYLES, PIECE_STYLES } from '../utils/themes';
 import { getBotMove } from '../utils/chessBot';
+import { useAuth } from '../utils/AuthContext';
+import { games } from '../utils/api';
 
 export default function Play({ theme }) {
+  const { user, updateUser } = useAuth();
   const [game, setGame] = useState(new Chess());
   const [botType, setBotType] = useState('random');
   const [pieceStyle, setPieceStyle] = useState('standard');
   const [playerColor, setPlayerColor] = useState('w');
   const [gameStarted, setGameStarted] = useState(false);
+  const [gameOver, setGameOver] = useState(false);
   const [status, setStatus] = useState('');
   const [moveHistory, setMoveHistory] = useState([]);
   const [thinking, setThinking] = useState(false);
+  const [eloResult, setEloResult] = useState(null);
   const moveListRef = useRef(null);
 
   useEffect(() => {
@@ -24,19 +29,49 @@ export default function Play({ theme }) {
     localStorage.setItem('chess-piece-style', pieceStyle);
   }, [pieceStyle]);
 
+  const submitGameResult = useCallback(async (g, result) => {
+    try {
+      const data = await games.submitResult({
+        result,
+        botType,
+        playerColor,
+        pgn: g.pgn(),
+        movesCount: g.moveNumber(),
+        anonymousId: !user ? (localStorage.getItem('chess-anon-id') || createAnonId()) : undefined
+      });
+      if (data.user && updateUser) updateUser(data.user);
+      if (!data.anonymous) setEloResult(data);
+    } catch (err) {
+      console.error('Failed to submit game result:', err);
+    }
+  }, [botType, playerColor, user, updateUser]);
+
+  function createAnonId() {
+    const id = 'anon-' + Math.random().toString(36).slice(2, 10);
+    localStorage.setItem('chess-anon-id', id);
+    return id;
+  }
+
   const updateStatus = useCallback((g) => {
     if (g.isCheckmate()) {
-      setStatus(g.turn() === playerColor ? 'Checkmate! You lost.' : 'Checkmate! You won!');
+      const result = g.turn() === playerColor ? 'loss' : 'win';
+      setStatus(result === 'win' ? 'Checkmate! You won!' : 'Checkmate! You lost.');
+      setGameOver(true);
+      submitGameResult(g, result);
     } else if (g.isDraw()) {
       setStatus('Draw!');
+      setGameOver(true);
+      submitGameResult(g, 'draw');
     } else if (g.isStalemate()) {
       setStatus('Stalemate!');
+      setGameOver(true);
+      submitGameResult(g, 'draw');
     } else if (g.inCheck()) {
       setStatus('Check!');
     } else {
       setStatus(g.turn() === playerColor ? 'Your turn' : 'Bot thinking...');
     }
-  }, [playerColor]);
+  }, [playerColor, submitGameResult]);
 
   const makeBotMove = useCallback((g) => {
     if (g.isGameOver() || g.turn() === playerColor) return;
@@ -75,7 +110,9 @@ export default function Play({ theme }) {
     setGame(g);
     setPlayerColor(color);
     setGameStarted(true);
+    setGameOver(false);
     setMoveHistory([]);
+    setEloResult(null);
     setStatus(color === 'w' ? 'Your turn' : 'Bot thinking...');
     if (color === 'b') {
       setTimeout(() => makeBotMove(g), 500);
@@ -84,9 +121,11 @@ export default function Play({ theme }) {
 
   const resetGame = () => {
     setGameStarted(false);
+    setGameOver(false);
     setGame(new Chess());
     setMoveHistory([]);
     setStatus('');
+    setEloResult(null);
   };
 
   useEffect(() => {
@@ -99,6 +138,22 @@ export default function Play({ theme }) {
     return (
       <div className="play-setup">
         <h2>New Game</h2>
+        {!user && (
+          <div className="guest-banner">
+            Playing as Guest &mdash; <a href="/register">Create an account</a> to track ELO and game history
+          </div>
+        )}
+        {user && (
+          <div className="elo-banner">
+            <span className="elo-display">Your ELO: <strong>{user.elo}</strong></span>
+            {user.calibrationGames < 2 && (
+              <span className="calibration-info">Calibration: {user.calibrationGames}/2 games</span>
+            )}
+            <span className="stats-display">
+              W: {user.gamesWon} / D: {user.gamesDrawn} / L: {user.gamesLost}
+            </span>
+          </div>
+        )}
 
         <div className="setup-section">
           <h3>Choose Opponent</h3>
@@ -154,11 +209,21 @@ export default function Play({ theme }) {
           </div>
           <Chessboard game={game} onMove={handleMove} pieceStyle={pieceStyle} flipped={playerColor === 'b'} />
           <div className="player-bar self">
-            <span className="player-name">You ({playerColor === 'w' ? 'White' : 'Black'})</span>
+            <span className="player-name">
+              {user ? user.username : 'Guest'} ({playerColor === 'w' ? 'White' : 'Black'})
+            </span>
+            {user && <span className="elo-small">ELO: {user.elo}</span>}
           </div>
         </div>
         <div className="game-panel">
           <div className="game-status">{status}</div>
+          {eloResult && (
+            <div className={`elo-change ${eloResult.eloChange >= 0 ? 'positive' : 'negative'}`}>
+              <span>ELO: {eloResult.eloBefore} → {eloResult.eloAfter}</span>
+              <span className="elo-delta">({eloResult.eloChange >= 0 ? '+' : ''}{eloResult.eloChange})</span>
+              {eloResult.isCalibration && <span className="calibration-tag">Calibration game</span>}
+            </div>
+          )}
           <div className="move-list" ref={moveListRef}>
             <h4>Moves</h4>
             {moveHistory.map((m, i) => (

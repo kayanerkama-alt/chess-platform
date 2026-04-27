@@ -6,6 +6,7 @@ const helmet = require('helmet');
 const compression = require('compression');
 const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/auth');
+const gameRoutes = require('./routes/games');
 const db = require('./db');
 
 const app = express();
@@ -24,6 +25,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use('/api/auth', authRoutes);
+app.use('/api/games', gameRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: Date.now() });

@@ -18,3 +18,8 @@ export const auth = {
   me: () => request('/auth/me'),
   updateSettings: (settings) => request('/auth/settings', { method: 'PUT', body: JSON.stringify({ settings }) })
 };
+
+export const games = {
+  submitResult: (data) => request('/games/result', { method: 'POST', body: JSON.stringify(data) }),
+  history: () => request('/games/history')
+};

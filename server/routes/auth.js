@@ -5,8 +5,7 @@ const { v4: uuidv4 } = require('uuid');
 const db = require('../db');
 
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET || require('crypto').randomBytes(64).toString('hex');
-const TOKEN_EXPIRY = '7d';
+const { JWT_SECRET, TOKEN_EXPIRY } = require('../config');
 
 router.post('/register', (req, res) => {
   try {
@@ -37,7 +36,9 @@ router.post('/register', (req, res) => {
       sameSite: 'strict',
       maxAge: 7 * 24 * 60 * 60 * 1000
     });
-    res.json({ user: { id, username } });
+
+    const user = db.prepare('SELECT id, username, elo, calibration_games, games_played, games_won, games_drawn, games_lost, settings FROM users WHERE id = ?').get(id);
+    res.json({ user: formatUser(user) });
   } catch (err) {
     console.error('Register error:', err);
     res.status(500).json({ error: 'Internal server error' });
@@ -56,7 +57,7 @@ router.post('/login', (req, res) => {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    db.prepare('UPDATE users SET last_login = datetime(\'now\') WHERE id = ?').run(user.id);
+    db.prepare("UPDATE users SET last_login = datetime('now') WHERE id = ?").run(user.id);
     const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, { expiresIn: TOKEN_EXPIRY });
     res.cookie('token', token, {
       httpOnly: true,
@@ -64,7 +65,7 @@ router.post('/login', (req, res) => {
       sameSite: 'strict',
       maxAge: 7 * 24 * 60 * 60 * 1000
     });
-    res.json({ user: { id: user.id, username: user.username } });
+    res.json({ user: formatUser(user) });
   } catch (err) {
     console.error('Login error:', err);
     res.status(500).json({ error: 'Internal server error' });
@@ -82,9 +83,9 @@ router.get('/me', (req, res) => {
     if (!token) return res.status(401).json({ error: 'Not authenticated' });
 
     const decoded = jwt.verify(token, JWT_SECRET);
-    const user = db.prepare('SELECT id, username, settings FROM users WHERE id = ?').get(decoded.id);
+    const user = db.prepare('SELECT id, username, elo, calibration_games, games_played, games_won, games_drawn, games_lost, settings FROM users WHERE id = ?').get(decoded.id);
     if (!user) return res.status(401).json({ error: 'User not found' });
-    res.json({ user: { id: user.id, username: user.username, settings: JSON.parse(user.settings || '{}') } });
+    res.json({ user: formatUser(user) });
   } catch (err) {
     res.status(401).json({ error: 'Invalid token' });
   }
@@ -103,5 +104,19 @@ router.put('/settings', (req, res) => {
     res.status(401).json({ error: 'Invalid token' });
   }
 });
+
+function formatUser(user) {
+  return {
+    id: user.id,
+    username: user.username,
+    elo: user.elo,
+    calibrationGames: user.calibration_games,
+    gamesPlayed: user.games_played,
+    gamesWon: user.games_won,
+    gamesDrawn: user.games_drawn,
+    gamesLost: user.games_lost,
+    settings: JSON.parse(user.settings || '{}')
+  };
+}
 
 module.exports = router;

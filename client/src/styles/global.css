@@ -536,6 +536,84 @@ body {
 .game-actions { display: flex; gap: 8px; }
 .game-actions .btn { flex: 1; }
 
+/* ELO & Rating */
+.elo-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 20px;
+  margin-bottom: 20px;
+}
+
+.elo-display { font-size: 1.1rem; }
+.elo-display strong { color: var(--accent); font-size: 1.3rem; }
+.calibration-info { color: var(--accent); font-size: 0.85rem; opacity: 0.8; }
+.stats-display { font-size: 0.85rem; opacity: 0.7; }
+
+.guest-banner {
+  text-align: center;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 20px;
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+}
+
+.guest-banner a { color: var(--accent); text-decoration: none; font-weight: 600; }
+.guest-banner a:hover { text-decoration: underline; }
+
+.elo-small { color: var(--accent); font-size: 0.8rem; font-weight: 600; }
+
+.elo-change {
+  text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.elo-change.positive { background: rgba(76, 175, 80, 0.15); color: #4caf50; }
+.elo-change.negative { background: rgba(244, 67, 54, 0.15); color: #f44336; }
+.elo-delta { margin-left: 6px; font-size: 1rem; }
+.calibration-tag { display: block; font-size: 0.75rem; opacity: 0.7; margin-top: 4px; }
+
+.hero-elo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.elo-badge {
+  background: var(--panel);
+  border: 1px solid var(--accent);
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.calibration-badge {
+  background: rgba(255, 152, 0, 0.15);
+  color: #ff9800;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+}
+
+.hero-guest-note {
+  margin-top: 12px;
+  font-size: 0.9rem;
+  opacity: 0.6;
+}
+
 /* Settings */
 .settings-page { max-width: 700px; margin: 0 auto; }
 .settings-page h2 { margin-bottom: 24px; }
@@ -609,20 +687,68 @@ body {
   opacity: 0.6;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .game-area { flex-direction: column; }
-  .hero-title { font-size: 1.8rem; }
-  .hero-icon { font-size: 2rem; }
-  .navbar { padding: 0 12px; }
-  .nav-links { gap: 6px; }
-  .features { grid-template-columns: 1fr 1fr; }
+/* Responsive — Tablet */
+@media (max-width: 1024px) {
+  .chessboard { width: min(420px, 80vw); height: min(420px, 80vw); }
+  .game-panel { min-width: 180px; }
 }
 
+/* Responsive — Small Tablet / Large Phone */
+@media (max-width: 768px) {
+  .game-area { flex-direction: column; align-items: center; }
+  .game-panel { width: 100%; max-width: 480px; }
+  .hero-title { font-size: 1.8rem; flex-wrap: wrap; }
+  .hero-icon { font-size: 2rem; }
+  .navbar { padding: 0 10px; }
+  .nav-links { gap: 4px; }
+  .nav-link { padding: 6px 8px; font-size: 0.82rem; }
+  .features { grid-template-columns: 1fr 1fr; }
+  .main-content { padding: 12px; }
+  .hero { padding: 30px 10px 20px; }
+  .play-setup { padding: 0 8px; }
+  .elo-banner { flex-direction: column; gap: 6px; padding: 10px 12px; }
+  .bot-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+  .move-list { max-height: 200px; }
+  .chessboard { width: min(380px, 90vw); height: min(380px, 90vw); }
+  .piece { font-size: min(2.6rem, 9vw); }
+  .footer { padding: 14px 10px; }
+  .legal-page { padding: 0 8px; }
+  .settings-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+}
+
+/* Responsive — Phone */
 @media (max-width: 480px) {
   .features { grid-template-columns: 1fr; }
-  .bot-grid { grid-template-columns: 1fr; }
+  .bot-grid { grid-template-columns: 1fr 1fr; }
   .color-choice { flex-direction: column; align-items: center; }
+  .hero-title { font-size: 1.4rem; }
+  .hero-subtitle { font-size: 0.95rem; }
+  .hero-icon { font-size: 1.6rem; }
+  .chessboard { width: min(340px, 94vw); height: min(340px, 94vw); }
+  .piece { font-size: min(2.2rem, 10vw); }
+  .nav-brand span:last-child { display: none; }
+  .navbar { height: 48px; }
+  .player-bar { padding: 6px 8px; font-size: 0.8rem; }
+  .game-status { font-size: 0.95rem; }
+  .auth-card { padding: 20px; margin: 0 8px; }
+  .btn-lg { padding: 12px 20px; font-size: 0.95rem; }
+  .style-grid { gap: 6px; }
+  .style-card { padding: 8px 12px; font-size: 0.8rem; }
+}
+
+/* Responsive — Very Small Phone */
+@media (max-width: 360px) {
+  .chessboard { width: 95vw; height: 95vw; }
+  .piece { font-size: 10vw; }
+  .bot-grid { grid-template-columns: 1fr; }
+  .hero-actions { flex-direction: column; align-items: center; }
+}
+
+/* Touch-friendly */
+@media (hover: none) and (pointer: coarse) {
+  .square { min-height: 36px; }
+  .btn { min-height: 44px; }
+  .nav-link { min-height: 40px; display: flex; align-items: center; }
 }
 
 /* Scrollbar */
