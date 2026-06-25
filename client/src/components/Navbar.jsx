@@ -39,6 +39,7 @@ export default function Navbar({ theme, setTheme }) {
         </div>
         {user ? (
           <>
+            <Link to="/history" className="nav-link">History</Link>
             <Link to="/settings" className="nav-link">Settings</Link>
             <span className="nav-user">{user.username}</span>
             <button className="nav-link logout-btn" onClick={handleLogout}>Logout</button>

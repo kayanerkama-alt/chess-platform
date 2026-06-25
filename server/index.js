@@ -5,12 +5,15 @@ const cors = require('cors');
 const helmet = require('helmet');
 const compression = require('compression');
 const cookieParser = require('cookie-parser');
+const http = require('http');
 const authRoutes = require('./routes/auth');
 const gameRoutes = require('./routes/games');
+const { wss } = require('./websocket');
 const db = require('./db');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const server = http.createServer(app);
 
 app.use(compression());
 app.use(helmet({
@@ -31,12 +34,23 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: Date.now() });
 });
 
+// WebSocket upgrade handling
+server.on('upgrade', (request, socket, head) => {
+  if (request.url === '/ws') {
+    wss.handleUpgrade(request, socket, head, (ws) => {
+      wss.emit('connection', ws, request);
+    });
+  } else {
+    socket.destroy();
+  }
+});
+
 const clientBuild = path.join(__dirname, '..', 'client', 'dist');
 app.use(express.static(clientBuild));
 app.get('*', (req, res) => {
   res.sendFile(path.join(clientBuild, 'index.html'));
 });
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Chess Platform server running on port ${PORT}`);
 });

@@ -94,6 +94,54 @@ export const THEMES = {
     border: '#b2ebf2',
     highlight: 'rgba(0, 151, 167, 0.3)',
     moveHighlight: 'rgba(100, 220, 230, 0.3)'
+  },
+  purple: {
+    name: 'Purple Haze',
+    light: '#d4c4e8',
+    dark: '#7b5fa8',
+    bg: '#1a1025',
+    text: '#e8dff5',
+    accent: '#b388ff',
+    panel: '#251535',
+    border: '#3a2555',
+    highlight: 'rgba(179, 136, 255, 0.4)',
+    moveHighlight: 'rgba(200, 170, 255, 0.3)'
+  },
+  copper: {
+    name: 'Copper',
+    light: '#e8c4a8',
+    dark: '#a0694a',
+    bg: '#1a1510',
+    text: '#f5e6d8',
+    accent: '#cd7f32',
+    panel: '#2a2018',
+    border: '#4a3528',
+    highlight: 'rgba(205, 127, 50, 0.4)',
+    moveHighlight: 'rgba(220, 160, 100, 0.3)'
+  },
+  emerald: {
+    name: 'Emerald',
+    light: '#a8e6cf',
+    dark: '#2e8b57',
+    bg: '#0a1a10',
+    text: '#d4f5e9',
+    accent: '#50c878',
+    panel: '#122820',
+    border: '#1a4030',
+    highlight: 'rgba(80, 200, 120, 0.4)',
+    moveHighlight: 'rgba(150, 230, 180, 0.3)'
+  },
+  noir: {
+    name: 'Noir',
+    light: '#4a4a4a',
+    dark: '#2a2a2a',
+    bg: '#0a0a0a',
+    text: '#e0e0e0',
+    accent: '#ffffff',
+    panel: '#151515',
+    border: '#303030',
+    highlight: 'rgba(255, 255, 255, 0.3)',
+    moveHighlight: 'rgba(200, 200, 200, 0.2)'
   }
 };
 

@@ -13,13 +13,14 @@ export default function Home() {
           UCX Chess Platform
         </h1>
         <p className="hero-subtitle">
-          A fast, privacy-focused chess platform with multiple themes, piece styles, and AI opponents.
+          A fast, privacy-focused chess platform with multiple themes, piece styles, AI opponents, multiplayer, and puzzle training.
         </p>
         <p className="hero-founded">Founded in 2023 by Kayan Erkama</p>
         <div className="hero-actions">
           {user ? (
             <>
               <Link to="/play" className="btn btn-primary btn-lg">Play Now</Link>
+              <Link to="/puzzle" className="btn btn-outline btn-lg">Puzzles</Link>
               <div className="hero-elo">
                 <span className="elo-badge">ELO: {user.elo}</span>
                 {user.calibrationGames < 2 && (
@@ -47,18 +48,28 @@ export default function Home() {
         </div>
         <div className="feature-card">
           <div className="feature-icon">&#127912;</div>
-          <h3>8 Themes</h3>
-          <p>Classic, Dark, Forest, Ocean, Sunset, Midnight, Rose, and Ice themes.</p>
+          <h3>12 Themes</h3>
+          <p>Classic, Dark, Forest, Ocean, Sunset, Midnight, Rose, Ice, Purple Haze, Copper, Emerald, and Noir.</p>
         </div>
         <div className="feature-card">
           <div className="feature-icon">&#128274;</div>
           <h3>Privacy First</h3>
-          <p>No ads. No tracking. Encrypted credentials. Your data stays yours.</p>
+          <p>No ads. No tracking. Encrypted credentials with Base32 tokens. Your data stays yours.</p>
         </div>
         <div className="feature-card">
-          <div className="feature-icon">&#9889;</div>
-          <h3>Lightning Fast</h3>
-          <p>Optimized for speed with minimal latency and instant responses.</p>
+          <div className="feature-icon">&#128101;</div>
+          <h3>Multiplayer</h3>
+          <p>Play real-time games against other players via WebSocket connections.</p>
+        </div>
+        <div className="feature-card">
+          <div className="feature-icon">&#129504;</div>
+          <h3>Puzzle Training</h3>
+          <p>Sharpen your tactics with interactive puzzles and track your progress.</p>
+        </div>
+        <div className="feature-card">
+          <div className="feature-icon">&#128200;</div>
+          <h3>Game Analysis</h3>
+          <p>Real-time position evaluation and move quality assessment like chess.com.</p>
         </div>
         <div className="feature-card">
           <div className="feature-icon">&#127942;</div>
@@ -66,9 +77,9 @@ export default function Home() {
           <p>Play 2 calibration games to determine your starting level, then track your rating.</p>
         </div>
         <div className="feature-card">
-          <div className="feature-icon">&#128241;</div>
-          <h3>Play Anywhere</h3>
-          <p>Fully responsive on mobile, tablet, and desktop. Your settings sync across devices.</p>
+          <div className="feature-icon">&#128266;</div>
+          <h3>Sound Effects</h3>
+          <p>Audio feedback for moves, captures, check, and checkmate.</p>
         </div>
       </section>
 

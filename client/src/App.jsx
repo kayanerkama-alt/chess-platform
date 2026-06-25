@@ -10,6 +10,8 @@ import Register from './pages/Register';
 import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
 import Settings from './pages/Settings';
+import History from './pages/History';
+import PuzzleTraining from './components/PuzzleTraining';
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -52,6 +54,8 @@ function AppContent() {
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/settings" element={<ProtectedRoute><Settings theme={theme} setTheme={setTheme} /></ProtectedRoute>} />
+          <Route path="/history" element={<ProtectedRoute><History /></ProtectedRoute>} />
+          <Route path="/puzzle" element={<PuzzleTraining theme={theme} />} />
         </Routes>
       </main>
       <footer className="footer">

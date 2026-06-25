@@ -41,6 +41,18 @@ export default function Chessboard({ game, onMove, pieceStyle = 'standard', flip
     }
   }
 
+  function getPieceAtSquare(file, rank) {
+    // chess.js board is array of arrays where:
+    // board[0] = rank 8 (top), board[7] = rank 1 (bottom)
+    // board[r][c] where r = 0-7, c = 0-7 (a-h left to right)
+    const row = 8 - rank;
+    const col = file.charCodeAt(0) - 97;
+    if (row >= 0 && row < 8 && col >= 0 && col < 8) {
+      return board[row][col];
+    }
+    return null;
+  }
+
   return (
     <div className="chessboard-wrapper">
       <div className="chessboard">
@@ -48,7 +60,7 @@ export default function Chessboard({ game, onMove, pieceStyle = 'standard', flip
           displayFiles.map((file, fi) => {
             const sq = `${file}${rank}`;
             const isLight = (ri + fi) % 2 === 0;
-            const piece = board[8 - rank]?.[file.charCodeAt(0) - 97];
+            const piece = getPieceAtSquare(file, rank);
             const isSelected = selected === sq;
             const isLegal = legalMoves.includes(sq);
             const isLastMove = lastMove && (lastMove.from === sq || lastMove.to === sq);
