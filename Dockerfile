@@ -4,20 +4,20 @@ WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
-COPY yarn.lock ./
 COPY client/package*.json ./client/
-COPY client/yarn.lock ./client/
 
-# Install dependencies
-RUN yarn install --frozen-lockfile
-RUN cd client && yarn install --frozen-lockfile && cd ..
+# Install root dependencies
+RUN npm install
+
+# Copy client package.json and install client deps
+RUN cd client && npm install
 
 # Build client
-RUN cd client && yarn build && cd ..
+RUN npm run build
 
 # Copy server code
 COPY server/ ./server/
-COPY data/ ./data/
+COPY .env.example ./
 
 # Create data directory
 RUN mkdir -p data
